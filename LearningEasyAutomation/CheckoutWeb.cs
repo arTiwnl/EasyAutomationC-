@@ -1,14 +1,28 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using EasyAutomationFramework;
+using OpenQA.Selenium;
+using static com.sun.jndi.cosnaming.IiopUrl;
+
+
 
 namespace LearningEasyAutomation;
 
 
-public class CheckoutWeb : Web
+public class CheckoutWeb : Web, IDisposable
 {
 
         public CheckoutWeb()
         {
                 StartBrowser(TypeDriver.GoogleChorme);
+        }
+
+        public void Dispose()
+        {
+              CloseBrowser();  
         }
 
         public void SendForm(Checkout checkout)
@@ -25,8 +39,17 @@ public class CheckoutWeb : Web
                 SelectValue(TypeElement.Id, TypeSelect.Text ,"state", checkout.State);
                 
                 AssignValue(TypeElement.Id,"Zip", checkout.Zip);
-           
-           
+
+                
+                driver.FindElements(By.ClassName("custom-control-label")).SingleOrDefault(x => x.GetAttribute("for").Contains(checkout.Payment))?.Click();
+             
+                
+                AssignValue(TypeElement.Id,"cc-name", checkout.Namecard);
+                AssignValue(TypeElement.Id,"cc-number", checkout.Creditcard);
+                AssignValue(TypeElement.Id,"cc-expiration", checkout.Expiration);
+                AssignValue(TypeElement.Id,"cc-cvv", checkout.Cvv);
+
+                Click(TypeElement.Xpath, "/html/body/div/div[2]/div[2]/form/button");
 
         }
     
